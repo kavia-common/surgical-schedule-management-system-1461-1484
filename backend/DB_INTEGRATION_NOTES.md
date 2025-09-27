@@ -16,14 +16,7 @@ This backend currently uses an in-memory data store (src/data/store.js) with see
 - Define schema.prisma models for resources, schedules, and availability windows.
 - Generate client and replace service methods with Prisma client calls.
 
-3) Microsoft SQL Server Option (mssql)
-- Install: npm i mssql
-- Configure environment variables (see .env.example: MSSQL_SERVER, MSSQL_DATABASE, MSSQL_USER, MSSQL_PASSWORD, MSSQL_PORT, MSSQL_ENCRYPT, MSSQL_TRUST_SERVER_CERTIFICATE)
-- Connection utility at src/data/db.js provides getPool() and testConnection().
-- Start-up test logs success/failure; service continues with in-memory store if DB is not configured.
-- Next steps: Create repository layer (e.g., src/repositories/*.js) that uses the MSSQL pool to implement CRUD for resources, schedules, and availability, then swap services to use repositories.
-
-Environment variables: see .env.example for HOST/PORT and DB settings.
+Environment variables: see .env.example for MONGODB_URI/PORT/HOST.
 
 Validation:
 - Validators in src/models/availability.js can be replaced by Mongoose schemas or zod/yup schemas validated in controllers.
