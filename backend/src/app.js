@@ -5,6 +5,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('../swagger');
 const resourcesRoutes = require('./routes/resources');
 const schedulesRoutes = require('./routes/schedules');
+const availabilityRoutes = require('./routes/availability');
 const { graphqlHTTP } = require('express-graphql');
 const { schema } = require('./graphql/schema');
 const { resolvers } = require('./graphql/resolvers');
@@ -48,6 +49,7 @@ app.use('/docs', swaggerUi.serve, (req, res, next) => {
     tags: [
       { name: 'Resources', description: 'Doctors, Nurses, Rooms, Devices' },
       { name: 'Schedules', description: 'Surgical schedules and conflicts' },
+      { name: 'Availability', description: 'Availability management and listing of available doctors/rooms' },
       { name: 'Meta', description: 'Health and documentation' },
     ],
   };
@@ -63,6 +65,7 @@ app.use('/', routes);
 // REST routes
 app.use(resourcesRoutes);
 app.use(schedulesRoutes);
+app.use(availabilityRoutes);
 
 // GraphQL endpoint (with GraphiQL enabled for exploration)
 app.use('/graphql', graphqlHTTP({

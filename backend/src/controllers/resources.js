@@ -7,6 +7,7 @@ const {
   deleteResource,
   setDeviceStatus,
 } = require('../services/resourcesService');
+const { validateDoctor, validateRoom } = require('../models/availability');
 
 /**
  * Resources Controller: doctors, nurses, rooms, devices
@@ -35,6 +36,21 @@ class ResourcesController {
     /** Create new resource */
     const { type } = req.params;
     const payload = req.body || {};
+
+    // minimal validation for doctor/room
+    if (type === 'doctors') {
+      const { ok, errors, value } = validateDoctor(payload);
+      if (!ok) return res.status(400).json({ error: errors.join(', ') });
+      const saved = createResource(type, value);
+      return res.status(201).json({ data: saved });
+    }
+    if (type === 'rooms') {
+      const { ok, errors, value } = validateRoom(payload);
+      if (!ok) return res.status(400).json({ error: errors.join(', ') });
+      const saved = createResource(type, value);
+      return res.status(201).json({ data: saved });
+    }
+
     const saved = createResource(type, payload);
     if (!saved) return res.status(400).json({ error: 'Invalid resource type' });
     return res.status(201).json({ data: saved });
@@ -45,7 +61,17 @@ class ResourcesController {
     /** Update resource */
     const { type, id } = req.params;
     const payload = req.body || {};
-    const saved = updateResource(type, id, payload);
+
+    let patch = payload;
+    if (type === 'doctors') {
+      const { value } = validateDoctor({ ...payload }); // lenient for patch
+      patch = value;
+    } else if (type === 'rooms') {
+      const { value } = validateRoom({ ...payload });
+      patch = value;
+    }
+
+    const saved = updateResource(type, id, patch);
     if (!saved) return res.status(404).json({ error: 'Not found' });
     return res.json({ data: saved });
   }

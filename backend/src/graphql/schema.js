@@ -38,6 +38,8 @@ const schema = buildSchema(`
   type Conflict { type: String!, message: String!, relatedEventId: ID }
   type ScheduleResult { data: ScheduleEvent, conflicts: [Conflict!] }
 
+  type AvailabilityWindow { dayOfWeek: Int!, start: String!, end: String! }
+
   type Query {
     doctors: [Doctor!]!
     nurses: [Nurse!]!
@@ -45,13 +47,21 @@ const schema = buildSchema(`
     devices: [Device!]!
     schedules(status: String, from: String, to: String): [ScheduleEvent!]!
     schedule(id: ID!): ScheduleEvent
+    availableDoctors(startISO: String, endISO: String): [Doctor!]!
+    availableRooms(startISO: String, endISO: String): [Room!]!
+    doctorAvailability(id: ID!): [AvailabilityWindow!]!
+    roomAvailability(id: ID!): [AvailabilityWindow!]!
   }
+
+  input AvailabilityInput { dayOfWeek: Int!, start: String!, end: String! }
 
   type Mutation {
     createSchedule(input: ScheduleInput!, allowConflicts: Boolean): ScheduleResult!
     updateSchedule(id: ID!, patch: JSON!, allowConflicts: Boolean): ScheduleResult
     deleteSchedule(id: ID!): Boolean!
     setDeviceStatus(id: ID!, status: String!, meta: JSON): Device
+    setDoctorAvailability(id: ID!, windows: [AvailabilityInput!]!): [AvailabilityWindow!]!
+    setRoomAvailability(id: ID!, windows: [AvailabilityInput!]!): [AvailabilityWindow!]!
   }
 `);
 

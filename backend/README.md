@@ -3,6 +3,7 @@
 Express backend providing:
 - REST endpoints for resources (doctors, nurses, rooms, devices)
 - REST endpoints for schedules (CRUD), conflicts, and suggestions
+- REST endpoints for availability (doctors/rooms windows, and available listing)
 - GraphQL endpoint for unified querying/mutations
 - WebSocket server for real-time updates
 - Swagger docs at /docs
@@ -28,6 +29,10 @@ Key Endpoints:
   - DELETE /api/schedules/:id
   - POST /api/schedules/conflicts
   - POST /api/schedules/suggest
+- Availability:
+  - GET /api/availability/{type}/available?startISO=&endISO= (type: doctors|rooms)
+  - GET /api/availability/{type}/{id}
+  - PUT /api/availability/{type}/{id}
 - GraphQL:
   - POST /graphql (GraphiQL enabled)
 - WebSocket:

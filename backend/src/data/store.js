@@ -10,6 +10,9 @@ const db = {
   rooms: new Map(),
   devices: new Map(),
   schedules: new Map(),
+  // Availability collections (per resource id)
+  doctorAvailability: new Map(), // id -> [{ dayOfWeek, start, end }]
+  roomAvailability: new Map(),   // id -> [{ dayOfWeek, start, end }]
 };
 
 function seed() {
@@ -29,6 +32,25 @@ function seed() {
   [n1, n2].forEach((x) => db.nurses.set(x.id, x));
   [r1, r2].forEach((x) => db.rooms.set(x.id, x));
   [dev1, dev2].forEach((x) => db.devices.set(x.id, x));
+
+  // Seed simple weekday availability 08:00-18:00 for doctors and rooms
+  [d1, d2].forEach((doc) => {
+    const windows = Array.from({ length: 5 }).map((_, i) => ({
+      dayOfWeek: i + 1, // Mon-Fri
+      start: '08:00',
+      end: '18:00',
+    }));
+    db.doctorAvailability.set(doc.id, windows);
+  });
+
+  [r1, r2].forEach((room) => {
+    const windows = Array.from({ length: 7 }).map((_, i) => ({
+      dayOfWeek: i, // Sun-Sat
+      start: '07:00',
+      end: '20:00',
+    }));
+    db.roomAvailability.set(room.id, windows);
+  });
 
   // initial schedule
   const now = Date.now();
